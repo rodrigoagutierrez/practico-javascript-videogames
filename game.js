@@ -4,10 +4,15 @@ const btnUp = document.querySelector('#up');
 const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
+const hearts = document.querySelector('.numLifes');
+
+hearts.innerHTML = 3;
+
 
 let canvasSize;
 let elementsSize;
 let level = 0;
+let lives = hearts.innerHTML = 3;
 
 const playerPosition = {
   x: undefined,
@@ -45,6 +50,12 @@ function startGame() {
   game.textAlign = 'end';
 
   const map = maps[level];
+
+  if(!map){
+    gameWin();
+    return;
+  } 
+
   const mapRows = map.trim().split('\n');
   const mapRowCols = mapRows.map(row => row.trim().split(''));
   // console.log({map, mapRows, mapRowCols});
@@ -87,6 +98,7 @@ function movePlayer() {
   
   if (giftCollision) {
     levelWin();
+    
   }
 
   const enemyCollision = enemyPositions.find(enemy => {
@@ -96,15 +108,39 @@ function movePlayer() {
   });
   
   if (enemyCollision) {
-    console.log('Chocaste contra una bomba');  
+    levelLost(); 
+    gameOver(); 
   }
 
   game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
 }
 
+function levelLost() {
+  lives --;
+
+  if(lives < 0) {
+    level = 0;
+  } 
+  
+  playerPosition.x = undefined;
+  playerPosition.y = undefined;
+  startGame();
+}
+
+function gameOver() {
+  
+  if(lives > 0) {
+    console.log('Has perdido, inicia de nuevo');
+  }
+}
+
 function levelWin() {
   level++;
   startGame();
+}
+
+function gameWin() {
+  console.log('Terminaste el juego');  
 }
 
 window.addEventListener('keydown', moveByKeys);

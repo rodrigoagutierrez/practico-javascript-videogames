@@ -24,6 +24,10 @@
     border-radius: 8px;
     background-color: #feff9d;
   }
+
+  .lifes {
+    text-align: center;
+  }
   
   .btns {
     display: flex;
