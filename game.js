@@ -5,12 +5,18 @@ const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
 const hearts = document.querySelector('#lives');
+const time = document.querySelector('#time');
+
 
 
 let canvasSize;
 let elementsSize;
 let level = 0;
-let lives = [];
+let lives = 3;
+
+let timeStart;
+let timePlayer;
+let timeInterval; 
 
 const playerPosition = {
   x: undefined,
@@ -53,6 +59,11 @@ function startGame() {
     gameWin();
     return;
   } 
+
+  if(!timeStart) {
+    timeStart = Date.now();
+    timeInterval = setInterval(showTime, 100);
+  }
 
   const mapRows = map.trim().split('\n');
   const mapRowCols = mapRows.map(row => row.trim().split(''));
@@ -116,11 +127,13 @@ function movePlayer() {
 }
 
 function levelLost() {
+  console.log('CHocaste con una bomba');
   lives --;
-
-  if(lives < 0) {
+  
+  if(lives <= 0) {
     level = 0;
     lives = 3;
+    timeStart = undefined;
   } 
   
   playerPosition.x = undefined;
@@ -131,8 +144,13 @@ function levelLost() {
 function showLives() {
   const heartsArray = Array(lives).fill(emojis['HEART']);    
   console.log(heartsArray);
+  
+  hearts.innerHTML = "";
+  heartsArray.forEach(heart => hearts.append(heart));
+}
 
-  lives;  
+function showTime() {
+  time.innerHTML = Date.now() - timeStart;
 }
 
 function levelWin() {
@@ -142,6 +160,7 @@ function levelWin() {
 
 function gameWin() {
   console.log('Terminaste el juego');  
+  clearInterval(timeInterval);
 }
 
 window.addEventListener('keydown', moveByKeys);
